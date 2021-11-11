@@ -58,15 +58,13 @@ jobs:
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - run: |
-        az account set --subscription 'Playground Subscription'
-        
+
     - name: Azure CLI Create Slot
       uses: azure/CLI@v1
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az webapp deployment slot create --name 'willryan-playground' --resource-group 'Playground_WillRyan' --slot 'dev'
+          az webapp deployment slot create --name 'willryan-playground' --resource-group 'Playground_WillRyan' --slot 'dev' --subscription 'Playground Subscription'
           
     - name: 'Deploy to Azure WebApp Slot'
       uses: azure/webapps-deploy@v2
