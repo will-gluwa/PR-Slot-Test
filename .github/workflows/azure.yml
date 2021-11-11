@@ -57,4 +57,4 @@ jobs:
           az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot 'dev' --subscription 'Playground Subscription'
 
     - run: |
-          az webapp deploy --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src-path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --slot 'dev'
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src  ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --slot 'dev'
