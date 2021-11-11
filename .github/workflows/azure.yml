@@ -59,8 +59,8 @@ jobs:
       with:
         azcliversion: 2.0.72
         inlineScript: |
-          az account set --subscription 3d91f14a-f591-496b-a3d1-f198b84caaa3
-          az webapp deployment slot create --name willryan-playground --resource-group Playground_WillRyan --slot dev
+          az account set --subscription 'Playground Subscription'
+          az webapp deployment slot create --name 'willryan-playground' --resource-group 'Playground_WillRyan' --slot 'dev'
     - name: 'Deploy to Azure WebApp Slot'
       uses: azure/webapps-deploy@v2
       with:
