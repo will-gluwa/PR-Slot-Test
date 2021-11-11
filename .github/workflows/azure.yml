@@ -48,13 +48,31 @@ jobs:
         npm run build --if-present
         npm run test --if-present
 
+    - uses: actions/upload-artifact@v2
+      with:
+        name: artifact
+        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: artifact
+        path: /artifact
+
+    - name: Display structure of downloaded files
+      run: ls -R
+      working-directory: /artifact
+
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-    - run: |
+    - name: Create slot
+      run: |
           az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot 'dev' --subscription 'Playground Subscription'
 
-    - run: |
-          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src  ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --slot 'dev'
+    - name: Deploy to slot
+      run: |
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact/artifact.zip --slot 'dev'
