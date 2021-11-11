@@ -24,6 +24,7 @@ env:
   AZURE_WEBAPP_NAME: willryan-playground    # set this to your application's name
   AZURE_WEBAPP_PACKAGE_PATH: 'test/build'      # set this to the path to your web app project, defaults to the repository root
   NODE_VERSION: '10.x'                # set this to the node version to use
+  RESOURCE_GROUP: 'Playground_WillRyan'
 
 jobs:
   build-and-deploy:
@@ -47,25 +48,13 @@ jobs:
         npm run build --if-present
         npm run test --if-present
 
-#    - name: 'Deploy to Azure WebApp'
-#      uses: azure/webapps-deploy@v2
-#      with:
-#       app-name: ${{ env.AZURE_WEBAPP_NAME }}
-#        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-#        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-
     - name: Azure Login
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     - run: |
-          az webapp deployment slot create --name 'willryan-playground' --resource-group 'Playground_WillRyan' --slot 'dev' --subscription 'Playground Subscription'
+          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot 'dev' --subscription 'Playground Subscription'
 
-    - name: 'Deploy to Azure WebApp Slot'
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: ${{ env.AZURE_WEBAPP_NAME }}
-        publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        slot-name: 'dev'
+    - run: |
+          az webapp deploy --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src-path ${{ env.AZURE_WEBAPP_PACKAGE_PATH }} --slot 'dev'
