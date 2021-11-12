@@ -72,7 +72,7 @@ jobs:
 
     - name: Create slot
       run: |
-          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription ${{ env.SUBSCRIPTION }}
+          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription '${{ env.SUBSCRIPTION }}'
 
     - name: Deploy to slot
       run: |
@@ -95,4 +95,4 @@ jobs:
       
       - name: Delete Slot
         run: |
-          az webapp deployment slot delete --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription  ${{ env.SUBSCRIPTION }}
+          az webapp deployment slot delete --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription '${{ env.SUBSCRIPTION }}'
