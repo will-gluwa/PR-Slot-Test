@@ -48,19 +48,10 @@ jobs:
         npm run build --if-present
         npm run test --if-present
 
-    - uses: actions/upload-artifact@v2
+    - uses: papeloto/action-zip@v1
       with:
-        name: artifact
-        path: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-        
-    - uses: actions/checkout@v2
-
-    - uses: actions/download-artifact@v2
-      with:
-        name: artifact
-
-    - name: Display structure of downloaded files
-      run: ls -R
+        files: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
+        dest: artifact.zip
 
     - name: Azure Login
       uses: azure/login@v1
