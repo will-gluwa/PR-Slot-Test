@@ -71,8 +71,8 @@ jobs:
 
     - name: Create slot
       run: |
-          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription 'Playground Subscription'
+          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch//\//- }} --subscription 'Playground Subscription'
 
     - name: Deploy to slot
       run: |
-          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ steps.extract_branch.outputs.branch }}
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ steps.extract_branch.outputs.branch//\//- }}
