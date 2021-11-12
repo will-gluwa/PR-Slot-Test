@@ -58,11 +58,9 @@ jobs:
     - uses: actions/download-artifact@v2
       with:
         name: artifact
-        path: /artifact
 
     - name: Display structure of downloaded files
       run: ls -R
-      working-directory: /artifact
 
     - name: Azure Login
       uses: azure/login@v1
@@ -75,4 +73,4 @@ jobs:
 
     - name: Deploy to slot
       run: |
-          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact/artifact.zip --slot 'dev'
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot 'dev'
