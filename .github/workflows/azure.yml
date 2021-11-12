@@ -38,8 +38,8 @@ env:
   PR_NUMBER: ${{ github.event.number }}
 
 jobs:
-  build-and-deploy:
-    name: Build and Deploy
+  openPullRequestJob:
+    name: Build and Deploy to Slot
     if: (github.event_name == 'pull_request' && github.event.action != 'closed')
     runs-on: ubuntu-latest
     environment: production
@@ -85,6 +85,7 @@ jobs:
           az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ env.PR_NUMBER }}
 
   closePullRequestJob:
+    name: Delete Slot
     if: (github.event_name == 'pull_request' && github.event.action == 'closed')
     runs-on: ubuntu-latest
     steps:
