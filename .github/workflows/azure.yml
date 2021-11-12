@@ -80,6 +80,12 @@ jobs:
       run: |
           az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ env.PR_NUMBER }} --subscription '${{ env.SUBSCRIPTION }}'
 
+    - name: Comment on Pull Request
+      uses: thollander/actions-comment-pull-request@1.0.0
+      with:
+        message: Created slot - https://willryan-playground-${{ env.PR_NUMBER }}.azurewebsites.net
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Deploy to slot
       run: |
           az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ env.PR_NUMBER }}
