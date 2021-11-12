@@ -19,6 +19,7 @@ on:
   push:
     branches:
       - main
+      - feature/*
 
 env:
   AZURE_WEBAPP_NAME: willryan-playground    # set this to your application's name
