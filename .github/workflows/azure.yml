@@ -35,6 +35,7 @@ env:
   NODE_VERSION: '10.x'                # set this to the node version to use
   RESOURCE_GROUP: 'Playground_WillRyan'
   SUBSCRIPTION: 'Playground Subscription'
+  PR_NUMBER: ${{ github.event.number }}
 
 jobs:
   build-and-deploy:
@@ -44,11 +45,6 @@ jobs:
     steps:
     
     - uses: actions/checkout@v2
-    
-    - name: Extract branch name
-      shell: bash
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | sed 's|/|-|')"
-      id: extract_branch
         
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v2
@@ -81,21 +77,16 @@ jobs:
 
     - name: Create slot
       run: |
-          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription '${{ env.SUBSCRIPTION }}'
+          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ env.PR_NUMBER }} --subscription '${{ env.SUBSCRIPTION }}'
 
     - name: Deploy to slot
       run: |
-          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ steps.extract_branch.outputs.branch }}
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot ${{ env.PR_NUMBER }}
 
   closePullRequestJob:
     if: (github.event_name == 'pull/request' && github.event.action == 'closed')
     runs-on: ubuntu-latest
     steps:
-    
-      - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/} | sed 's|/|-|')"
-        id: extract_branch
         
       - name: Azure Login
         uses: azure/login@v1
@@ -104,4 +95,4 @@ jobs:
       
       - name: Delete Slot
         run: |
-          az webapp deployment slot delete --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ steps.extract_branch.outputs.branch }} --subscription '${{ env.SUBSCRIPTION }}'
+          az webapp deployment slot delete --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot ${{ env.PR_NUMBER }} --subscription '${{ env.SUBSCRIPTION }}'
