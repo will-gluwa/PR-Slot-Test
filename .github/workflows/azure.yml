@@ -58,6 +58,16 @@ jobs:
         name: artifact
         path: ${{ github.workspace }}/artifact.zip
 
+    - name: Extract branch name
+      shell: bash
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    - uses: yeouchien/sanitize-branch-name-action@v1
+      with:
+        branch-name: ${{ steps.extract_branch.outputs.branch }}
+        id: branch_name
+
     - name: Azure Login
       uses: azure/login@v1
       with:
@@ -65,8 +75,8 @@ jobs:
 
     - name: Create slot
       run: |
-          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot 'dev' --subscription 'Playground Subscription'
+          az webapp deployment slot create --name ${{ env.AZURE_WEBAPP_NAME }} --resource-group ${{ env.RESOURCE_GROUP }} --slot $${ steps.branch_name.outputs.sanitized-branch-name }} --subscription 'Playground Subscription'
 
     - name: Deploy to slot
       run: |
-          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot 'dev'
+          az webapp deployment source config-zip --resource-group ${{ env.RESOURCE_GROUP }} --name ${{ env.AZURE_WEBAPP_NAME }} --src artifact.zip --slot $${ steps.branch_name.outputs.sanitized-branch-name }}
